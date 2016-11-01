@@ -85,7 +85,7 @@ public class LoggerInterceptor implements Interceptor {
             String url = request.url().toString();
             Headers headers = request.headers();
 
-            Log.e(tag, "========request'log=======");
+            Log.e(tag, "\n========request'log======= ");
             Log.e(tag, "method : " + request.method());
             Log.e(tag, "url : " + url);
             if (headers != null && headers.size() > 0) {

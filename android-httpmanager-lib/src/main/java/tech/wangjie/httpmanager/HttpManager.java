@@ -29,4 +29,5 @@ public abstract class HttpManager {
 
     public abstract Call newRealCall(HttpRequest request);
 
+    public abstract HttpConfig getDefaultConfig();
 }

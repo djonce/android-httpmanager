@@ -23,37 +23,33 @@ public class OkHttpManagerImpl extends HttpManager {
     }
 
     @Override
-    public void enqueue(HttpRequest request, HttpListener callback) {
-        if (callback == null) {
-            callback = HttpListener.defaultListener;
-        }
-        final HttpListener realCallback = callback;
+    public void enqueue(HttpRequest request, final HttpListener callback) {
 
-        deliveryStartResult(request, callback);
+        deliveryStartResult(callback);
         request.getRealCall().enqueue(new Callback() {
 
             @Override
             public void onFailure(Call call, IOException e) {
-                deliveryFailResult(e, realCallback);
+                deliveryFailResult(e, callback);
             }
 
             @Override
             public void onResponse(Call call, okhttp3.Response response) throws IOException {
                 try {
                     if (call.isCanceled()) {
-                        deliveryFailResult(new IOException("This request is canceled~"), realCallback);
+                        deliveryFailResult(new IOException("This request is canceled~"), callback);
                         return;
                     }
 
                     if (response == null || !response.isSuccessful()) {
-                        deliveryFailResult(new IOException("Request failed ~, Response code " + response.code()), realCallback);
+                        deliveryFailResult(new IOException("Request failed ~, Response code " + response.code()), callback);
                         return;
                     }
 
-                    Object obj = realCallback.parseNetworkResponse(response);
-                    deliverySuccessResult(obj, realCallback);
+                    Object obj = callback.parseNetworkResponse(response);
+                    deliverySuccessResult(obj, callback);
                 } catch (Exception e) {
-                    deliveryFailResult(new IOException(e.getMessage()), realCallback);
+                    deliveryFailResult(new IOException(e.getMessage()), callback);
                 } finally {
                     if (response != null && response.body() != null) {
                         response.body().close();
@@ -66,6 +62,11 @@ public class OkHttpManagerImpl extends HttpManager {
     @Override
     public Call newRealCall(HttpRequest request) {
         return httpClient.newCall(request.getRealRequest());
+    }
+
+    @Override
+    public HttpConfig getDefaultConfig() {
+        return new HttpConfig();
     }
 
     private void deliveryFailResult(final Exception e, final HttpListener callback) {
@@ -93,13 +94,13 @@ public class OkHttpManagerImpl extends HttpManager {
         });
     }
 
-    private void deliveryStartResult(final HttpRequest obj, final HttpListener callback) {
+    private void deliveryStartResult(final HttpListener callback) {
         if (callback == null) return ;
 
         CallbackDelivery.get().execute(new Runnable() {
             @Override
             public void run() {
-                callback.onStart(obj);
+                callback.onStart();
             }
         });
     }

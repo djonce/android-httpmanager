@@ -8,7 +8,7 @@ import okhttp3.Response;
 
 public abstract class HttpListener<T> {
 
-    public void onStart(HttpRequest request) {}
+    public void onStart() {}
 
     public void inProgress(float progress, long total) {}
 

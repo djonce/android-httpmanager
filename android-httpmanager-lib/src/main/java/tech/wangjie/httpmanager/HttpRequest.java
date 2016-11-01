@@ -11,6 +11,7 @@ import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Headers;
+import okhttp3.Request;
 import okhttp3.RequestBody;
 import tech.wangjie.httpmanager.utils.ClassUtils;
 import tech.wangjie.httpmanager.utils.HttpMethods;
@@ -32,13 +33,17 @@ public abstract class HttpRequest {
 
     protected Object apiParam;
 
-    protected okhttp3.Request realRequest;
-    protected okhttp3.Request.Builder builder = new okhttp3.Request.Builder();
+    protected Request realRequest;
+    protected Request.Builder builder = new Request.Builder();
 
 
     public HttpRequest(String url) {
         this.baseUrl = url;
         initBaseParam();
+    }
+
+    public HttpRequest(Request request) {
+        this.realRequest = request;
     }
 
     // 对象参数
@@ -66,7 +71,9 @@ public abstract class HttpRequest {
 
         switch (method) {
             case GET:
-                appendParams(baseUrl, params);
+                // 处理参数
+                baseUrl = appendParams(baseUrl, params);
+
                 builder.get();
                 break;
 
@@ -81,9 +88,8 @@ public abstract class HttpRequest {
         initBaseParam();
     }
 
-    public HttpRequest(String url, Object tag, Map<String, String> params, Map<String, String> headers) {
+    public HttpRequest(String url, Map<String, String> params, Map<String, String> headers) {
         this.baseUrl = url;
-        this.tag = tag;
         this.params = params;
         this.headers = headers;
         initBaseParam();
