@@ -12,4 +12,5 @@ public abstract class StringHttpListener extends HttpListener<String> {
     public String parseNetworkResponse(Response response) throws Exception {
         return response.body().string();
     }
+
 }

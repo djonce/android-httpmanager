@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import okhttp3.Call;
 import okhttp3.Headers;
@@ -99,7 +100,7 @@ public abstract class HttpRequest {
      * 初始化一些基本参数 baseUrl , tag , headers
      */
     private void initBaseParam() {
-        builder.url(baseUrl).tag(tag);
+        builder.url(baseUrl).tag(tag = UUID.randomUUID());
         appendHeaders();
 
         // 解析参数并组装成ok request
@@ -117,6 +118,12 @@ public abstract class HttpRequest {
     }
 
     protected abstract RequestBody buildRequestBody();
+
+    protected abstract void buildRequest(HttpListener callback);
+
+    public Object getTag() {
+        return tag;
+    }
 
     protected void appendHeaders() {
         Headers.Builder headerBuilder = new Headers.Builder();
@@ -142,9 +149,6 @@ public abstract class HttpRequest {
         return builder.build().toString();
     }
 
-    public HttpRequest createDefaultRequest() {
-        RequestBody requestBody = buildRequestBody();
 
-        return this;
-    }
+
 }

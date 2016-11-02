@@ -10,7 +10,7 @@ import tech.wangjie.httpmanager.utils.HttpUri;
  */
 
 @HttpUri(ApiConfig.USER)
-@HttpMethod(HttpMethods.GET)
+@HttpMethod(HttpMethods.POST)
 @HttpBaseURL(ApiConfig.Host)
 public class UserParam extends ApiParam {
 

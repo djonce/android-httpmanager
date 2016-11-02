@@ -31,4 +31,9 @@ public class StringRequest extends HttpRequest {
     protected RequestBody buildRequestBody() {
         return null;
     }
+
+    @Override
+    protected void buildRequest(HttpListener callback) {
+
+    }
 }

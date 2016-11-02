@@ -17,6 +17,7 @@ public enum  HttpMethods {
     PATCH("PATCH");
 
     private String methodName;
+
     HttpMethods(String methodName) {
         this.methodName = methodName;
     }

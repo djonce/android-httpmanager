@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 import java.io.File;
 
@@ -21,11 +23,22 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    ProgressBar progressBar;
+    Button button2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        button2 = (Button) findViewById(R.id.button2);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelDownload();
+            }
+        });
     }
 
     private void getSampleData() {
@@ -65,14 +78,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void doClick(View view) {
-//        getSampleData();
         getSampleFile();
     }
 
+
+    private void cancelDownload() {
+
+        HttpManager.getInstance().cancel(download);
+    }
+
+    String api = "http://test.19ba.cn/brave.mp3";
+    HttpRequest download = new StringRequest(api);
+
     private void getSampleFile() {
 
-        String api = "http://issuecdn.baidupcs.com/issue/netdisk/yunguanjia/BaiduYunGuanjia_5.4.10.exe";
-        HttpManager.getInstance().enqueue(new StringRequest(api), new FileHttpListener("test.exe", getCacheDir().getAbsolutePath()) {
+        HttpManager.getInstance().enqueue(download, new FileHttpListener("brave.mp3", getCacheDir().getAbsolutePath()) {
             @Override
             public void onStart() {
                 super.onStart();
@@ -94,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
             public void inProgress(float progress, long total) {
                 super.inProgress(progress, total);
 
+                progressBar.setProgress((int) (progress * 100));
                 Log.e(TAG, "Progress :" + progress + "  total:" + total);
             }
 

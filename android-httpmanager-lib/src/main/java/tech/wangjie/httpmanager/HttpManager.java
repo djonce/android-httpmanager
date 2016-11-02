@@ -27,6 +27,8 @@ public abstract class HttpManager {
 
     public abstract void enqueue(HttpRequest request, HttpListener callback);
 
+    public abstract void cancel(HttpRequest request);
+
     public abstract Call newRealCall(HttpRequest request);
 
     public abstract HttpConfig getDefaultConfig();

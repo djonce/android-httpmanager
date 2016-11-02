@@ -23,4 +23,7 @@ public class JsonRequest extends HttpRequest {
     protected RequestBody buildRequestBody() {
         return RequestBody.create(mediaType, appendParams(baseUrl, params));
     }
+
+    @Override
+    protected void buildRequest(HttpListener callback) {}
 }

@@ -1,5 +1,7 @@
 package tech.wangjie.httpmanager;
 
+import android.util.Log;
+
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -25,6 +27,7 @@ public class OkHttpManagerImpl extends HttpManager {
     @Override
     public void enqueue(HttpRequest request, final HttpListener callback) {
 
+        request.buildRequest();
         deliveryStartResult(callback);
         request.getRealCall().enqueue(new Callback() {
 
@@ -57,6 +60,25 @@ public class OkHttpManagerImpl extends HttpManager {
                 }
             }
         });
+    }
+
+    @Override
+    public void cancel(HttpRequest request) {
+
+        Object tag = request.getTag();
+        for (Call call : httpClient.dispatcher().queuedCalls()) {
+            if (tag.equals(call.request().tag())) {
+                Log.e(TAG, " queuedCalls Cancel" );
+                call.cancel();
+            }
+        }
+
+        for (Call call : httpClient.dispatcher().runningCalls()) {
+            if (tag.equals(call.request().tag())) {
+                Log.e(TAG, " runningCalls Cancel" );
+                call.cancel();
+            }
+        }
     }
 
     @Override
