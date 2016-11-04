@@ -13,6 +13,11 @@ public abstract class HttpManager {
     public static final String TAG = HttpManager.class.getSimpleName();
 
     private static HttpManager httpManager;
+    private HttpConfig httpConfig;
+
+    public static void initialize(HttpConfig httpConfig) {
+        getInstance().setHttpConfig(httpConfig);
+    }
 
     public static HttpManager getInstance() {
         if (httpManager == null) {
@@ -31,5 +36,13 @@ public abstract class HttpManager {
 
     public abstract Call newRealCall(HttpRequest request);
 
-    public abstract HttpConfig getDefaultConfig();
+    public HttpConfig getHttpConfig() {
+        if (httpConfig == null)
+            httpConfig = new HttpConfig(null);
+        return httpConfig;
+    }
+
+    public void setHttpConfig(HttpConfig httpConfig) {
+        this.httpConfig = httpConfig;
+    }
 }

@@ -20,15 +20,4 @@ public abstract class HttpListener<T> {
 
     public abstract T parseNetworkResponse(Response response) throws Exception;
 
-    public static HttpListener defaultListener = new HttpListener() {
-        @Override
-        public void onSuccess(Object response) {
-
-        }
-
-        @Override
-        public Response parseNetworkResponse(Response response) throws Exception {
-            return response;
-        }
-    };
 }

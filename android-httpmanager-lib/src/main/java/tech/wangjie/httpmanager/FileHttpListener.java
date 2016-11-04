@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 import okhttp3.Response;
 
@@ -17,7 +18,7 @@ public abstract class FileHttpListener extends HttpListener<File> {
     private String fileDir;
 
     public FileHttpListener() {
-        this.httpConfig = HttpManager.getInstance().getDefaultConfig();
+        this.httpConfig = HttpManager.getInstance().getHttpConfig();
     }
 
     public FileHttpListener(String fileName) {
@@ -41,13 +42,13 @@ public abstract class FileHttpListener extends HttpListener<File> {
         int length = 0;
 
         try {
-//            if (fileName == null) {
-//                fileName = httpConfig.getRandName();
-//            }
-//
-//            if (fileDir == null) {
-//                fileDir = httpConfig.getFileFolder();
-//            }
+            if (fileName == null) {
+                fileName = UUID.randomUUID().toString();
+            }
+
+            if (fileDir == null) {
+                fileDir = httpConfig.getCacheDir();
+            }
 
             // 检验文件夹，及文件名称
             File dir = new File(fileDir);

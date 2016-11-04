@@ -9,9 +9,9 @@ import tech.wangjie.httpmanager.utils.HttpUri;
  * Created by wangjie on 2016/10/31 0031
  */
 
-@HttpUri(ApiConfig.USER)
+@HttpUri("login")
 @HttpMethod(HttpMethods.POST)
-@HttpBaseURL(ApiConfig.Host)
+@HttpBaseURL("http://localhost:8080/")
 public class UserParam extends ApiParam {
 
     private String name;

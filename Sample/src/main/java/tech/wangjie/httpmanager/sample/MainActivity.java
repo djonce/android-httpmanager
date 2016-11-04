@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import java.io.File;
 
 import tech.wangjie.httpmanager.FileHttpListener;
+import tech.wangjie.httpmanager.HttpConfig;
 import tech.wangjie.httpmanager.HttpManager;
 import tech.wangjie.httpmanager.HttpRequest;
 import tech.wangjie.httpmanager.JsonHttpListener;
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     ProgressBar progressBar;
-    Button button2;
+    Button button2, button3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +34,27 @@ public class MainActivity extends AppCompatActivity {
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         button2 = (Button) findViewById(R.id.button2);
+        button3 = (Button) findViewById(R.id.button3);
+
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cancelDownload();
             }
         });
+
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HttpConfig httpConfig = new HttpConfig(MainActivity.this)
+                        .setDebugged(true)
+                        .setConnectTimeout(15000);
+
+                HttpManager.initialize(httpConfig);
+            }
+        });
+
+
     }
 
     private void getSampleData() {
@@ -78,7 +94,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void doClick(View view) {
-        getSampleFile();
+//        getSampleFile();
+
+        getSampleData();
     }
 
 
@@ -92,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getSampleFile() {
 
-        HttpManager.getInstance().enqueue(download, new FileHttpListener("brave.mp3", getCacheDir().getAbsolutePath()) {
+        HttpManager.getInstance().enqueue(download, new FileHttpListener() {
             @Override
             public void onStart() {
                 super.onStart();

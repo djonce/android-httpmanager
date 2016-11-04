@@ -3,6 +3,7 @@ package tech.wangjie.httpmanager;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -19,15 +20,31 @@ public class OkHttpManagerImpl extends HttpManager {
 
     public OkHttpManagerImpl() {
         if (httpClient == null) {
-            this.httpClient = new OkHttpClient.Builder()
-                    .addInterceptor(new LoggerInterceptor(TAG)).build();
+            this.httpClient = new OkHttpClient();
         }
+    }
+
+    public OkHttpClient newOkHttpClient(HttpConfig httpConfig) {
+        if (httpConfig == null) {
+            throw new IllegalArgumentException("httpconfig is not null");
+        }
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+        if (httpConfig.isDebugged()) {
+            builder.addInterceptor(new LoggerInterceptor(TAG));
+        }
+
+        builder.connectTimeout(httpConfig.getConnectTimeOut(), TimeUnit.MILLISECONDS);
+        builder.readTimeout(httpConfig.getReadTimeOut(), TimeUnit.MILLISECONDS);
+
+        return httpClient = builder.build();
     }
 
     @Override
     public void enqueue(HttpRequest request, final HttpListener callback) {
 
-        request.buildRequest();
+        request.buildRequest(callback);
         deliveryStartResult(callback);
         request.getRealCall().enqueue(new Callback() {
 
@@ -87,8 +104,9 @@ public class OkHttpManagerImpl extends HttpManager {
     }
 
     @Override
-    public HttpConfig getDefaultConfig() {
-        return new HttpConfig();
+    public void setHttpConfig(HttpConfig httpConfig) {
+        // 处理网络配置
+        newOkHttpClient(httpConfig);
     }
 
     private void deliveryFailResult(final Exception e, final HttpListener callback) {
